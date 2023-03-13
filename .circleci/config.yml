@@ -13,7 +13,7 @@ commands:
           when: on_fail
           command: |
             aws cloudformation delete-stack \
-            --stack-name udapeople-frontend-<< parameters.WorkflowID >> \
+            --stack-name udapeople-frontend-<< parameters.WorkflowID >>
             aws cloudformation delete-stack \
             --stack-name udapeople-backend-<< parameters.WorkflowID >>
 
