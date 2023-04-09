@@ -1,54 +1,53 @@
 version: 2.1
 
 commands:
-
   install-aws-cli:
-    description: Install AWS CLI
-    steps:
-      - run:
-          name: Install AWS CLI
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip "awscliv2.zip"
-            sudo ./aws/install
+  description: Install AWS CLI
+  steps:
+    - run:
+      name: Install AWS CLI
+      command: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip "awscliv2.zip"
+        sudo ./aws/install
 
   install-ansible:
     description: Install Ansible
     steps:
       - run:
-          name: Install Ansible
-          command: |
-            sudo apt update
-            sudo apt install software-properties-common -y
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible -y
+        name: Install Ansible
+        command: |
+          sudo apt update
+          sudo apt install software-properties-common -y
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install ansible -y
 
   install-tar-gzip:
     description: Install tar and gzip
     steps:
       - run:
-          name: Install tar and gzip
-          command: |
-            sudo apt update
-            sudo apt install tar gzip -y
+        name: Install tar and gzip
+        command: |
+          sudo apt update
+          sudo apt install tar gzip -y
 
   install-python:
     description: Install python
     steps:
       - run:
-          name: Install Python
-          command: |
-            sudo apt update
-            sudo apt install python3
+        name: Install Python
+        command: |
+          sudo apt update
+          sudo apt install python3
 
   install-nodejs-npm:
     description: Install Node and NPM
     steps:
       - run:
-          name: Install Node and NPM
-          command: |
-            sudo apt update
-            sudo apt install -y nodejs
+        name: Install Node and NPM
+        command: |
+          sudo apt update
+          sudo apt install -y nodejs
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -56,8 +55,8 @@ commands:
       WorkflowID:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
-    steps:
-      - run:
+      steps:
+        - run:
           name: Destroy environments
           when: on_fail
           command: |
@@ -72,19 +71,19 @@ commands:
       Workflow_ID:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
-    steps:
-      -run:
-          name: Revert Migrations
-          when: on_fail
-          command: |
-            LAST_MIGRATION_STATE=$(curl --insecure  https://kvdb.io/RMktn9tdJcK4CjcEV3o6uv/migration_<< parameters.Workflow_ID >>)
-            # Logic for reverting the database state
-            if (( $LAST_MIGRATION_STATE == 1 ));
+      steps:
+        -run:
+        name: Revert Migrations
+        when: on_fail
+        command: |
+          LAST_MIGRATION_STATE=$(curl --insecure  https://kvdb.io/RMktn9tdJcK4CjcEV3o6uv/migration_<< parameters.Workflow_ID >>)
+          # Logic for reverting the database state
+          if (( $LAST_MIGRATION_STATE == 1 ));
             then
-              cd ~/project/backend
-              npm install
-              npm run migration:revert
-            fi
+            cd ~/project/backend
+            npm install
+            npm run migration:revert
+          fi
 
 jobs:
   build-frontend:
