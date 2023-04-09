@@ -162,7 +162,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["c6:51:8a:cc:47:57:34:5b:ed:38:6a:fe:40:05:6e:31"]
       # attach workspace
-       - attach_workspace:
+      - attach_workspace:
           at: ~/
       - run:
           name: Install AWS CLI
@@ -171,12 +171,12 @@ jobs:
             unzip "awscliv2.zip"
             sudo ./aws/install
       - run:
-         name: Install Ansible
-         command: |
-           sudo apt update
-           sudo apt install software-properties-common -y
-           sudo add-apt-repository --yes --update ppa:ansible/ansible
-           sudo apt install ansible -y
+          name: Install Ansible
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y
 
       - run:
           name: Install tar and gzip
