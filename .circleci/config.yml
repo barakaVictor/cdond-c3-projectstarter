@@ -389,10 +389,6 @@ jobs:
             echo "${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-
-            echo "Sleeping for 1 minute"
-            sleep 60
-
             if curl "${API_URL}/api/status" | grep "ok"
               then
                 exit 0
@@ -497,7 +493,7 @@ workflows:
           requires: [run-migrations, deploy-backend]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #    requires: [smoke-test]
-      # - cleanup:
-      #    requires: [cloudfront-update]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
