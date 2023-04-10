@@ -377,5 +377,5 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-backend:
           requires: [run-migrations]
-       - deploy-frontend:
+      - deploy-frontend:
           requires: [run-migrations, deploy-backend]
