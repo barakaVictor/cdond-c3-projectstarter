@@ -286,11 +286,11 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS
-      - image: cimg/aws:2023.04
+      - image: cimg/base:2023.04
     steps:
       # Checkout code from git
       - checkout
-      #- install-aws-cli
+      - install-aws-cli
       - install-python
       - install-ansible
       - install-nodejs-npm
