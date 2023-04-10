@@ -94,11 +94,11 @@ jobs:
       - restore_cache:
         keys: [frontend-build]
       - run:
-        name: Build Frontend
-        command: |
-          cd frontend
-          npm install
-          npm run build
+          name: Build Frontend
+          command: |
+            cd frontend
+            npm install
+            npm run build
       - save_cache:
         paths: [frontend/node_modules]
         key: frontend-build
@@ -111,11 +111,11 @@ jobs:
       - restore_cache:
         keys: [backend-build]
       - run:
-        name: Back-end build
-        command: |
-          cd backend
-          npm install
-          npm run build
+          name: Back-end build
+          command: |
+            cd backend
+            npm install
+            npm run build
       - save_cache:
         paths: [backend/node_modules]
         key: backend-build
@@ -128,11 +128,11 @@ jobs:
       - restore_cache:
         keys: [frontend-build]
       - run:
-        name: Test Frontend
-        command: |
-          cd frontend
-          npm install
-          npm run test
+          name: Test Frontend
+          command: |
+            cd frontend
+            npm install
+            npm run test
 
   test-backend:
     docker:
@@ -142,11 +142,11 @@ jobs:
       - restore_cache:
         keys: [backend-build]
       - run:
-        name: Test Backend
-        command: |
-          cd backend
-          npm install
-          npm run test
+          name: Test Backend
+          command: |
+            cd backend
+            npm install
+            npm run test
 
   scan-frontend:
     docker:
@@ -156,13 +156,13 @@ jobs:
       - restore_cache:
         keys: [frontend-build]
       - run:
-        name: Scan Frontend
-        command: |
-          cd frontend
-          npm install
-          npm audit fix --force
-          npm audit fix --force
-          npm audit --audit-level=critical
+          name: Scan Frontend
+          command: |
+            cd frontend
+            npm install
+            npm audit fix --force
+            npm audit fix --force
+            npm audit --audit-level=critical
 
   scan-backend:
     docker:
@@ -172,13 +172,13 @@ jobs:
       - restore_cache:
         keys: [backend-build]
       - run:
-        name: Scan Backend
-        command: |
-          cd backend
-          npm install
-          npm audit fix --force
-          npm audit fix --force
-          npm audit --audit-level=critical
+          name: Scan Backend
+          command: |
+            cd backend
+            npm install
+            npm audit fix --force
+            npm audit fix --force
+            npm audit --audit-level=critical
 
   deploy-infrastructure:
     docker:
@@ -188,27 +188,27 @@ jobs:
       - checkout
       - install-tar-gzip
       - run:
-        name: Ensure back-end infrastructure exists
-        command: |
-          aws cloudformation deploy \
-          --template-file .circleci/files/backend.yml \
-          --tags project=udapeople \
-          --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-          --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/backend.yml \
+            --tags project=udapeople \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
-        name: Ensure front-end infrastructure exist
-        command: |
-          aws cloudformation deploy \
-          --template-file .circleci/files/frontend.yml \
-          --tags project=udapeople \
-          --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-          --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/frontend.yml \
+            --tags project=udapeople \
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
-        name: Add back-end ip to ansible inventoryy
-        command: |
-          BACKEND_PUBLIC_IP=$(aws --region us-east-1 ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicDnsName' --output text)
-          echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
-          cat .circleci/ansible/inventory.txt
+          name: Add back-end ip to ansible inventoryy
+          command: |
+            BACKEND_PUBLIC_IP=$(aws --region us-east-1 ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicDnsName' --output text)
+            echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
         root: ~/
         paths:
@@ -233,11 +233,11 @@ jobs:
       - install-ansible
       - install-tar-gzip
       - run:
-        name: Configure server
-        command: |
-          cd .circleci/ansible
-          cat inventory.txt
-          ansible-playbook -i inventory.txt configure-server.yml
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment
 
   run-migrations:
@@ -247,22 +247,22 @@ jobs:
       # Checkout code from git
       - checkout
       - run:
-        name: Run migrations
-        command: |
-          cd backend
-          npm install
-          # Run and save the migration output
-          npm run migrations > migrations_dump.txt
+          name: Run migrations
+          command: |
+            cd backend
+            npm install
+            # Run and save the migration output
+            npm run migrations > migrations_dump.txt
       - run:
-        name: Send migration results to memstash
-        command: |
-          if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-          then
-            # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
-            #curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-            # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
-            curl https://kvdb.io/RMktn9tdJcK4CjcEV3o6uv/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-          fi
+          name: Send migration results to memstash
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+              # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
+              #curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+              # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
+              curl https://kvdb.io/RMktn9tdJcK4CjcEV3o6uv/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            fi
       - destroy-environment
 
   deploy-frontend:
@@ -277,25 +277,25 @@ jobs:
       - install-ansible
       - install-nodejs-npm
       - run:
-        name: Get backend url
-        command: |
-          export BACKEND_IP=$(aws ec2 describe-instances \
-          --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-          --query 'Reservations[*].Instances[*].PublicIpAddress' \
-          --output text)
-          export API_URL="http://${BACKEND_IP}:3030"
-          echo "API_URL = ${API_URL}"
-          echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-          cat frontend/.env
+          name: Get backend url
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
       - run:
-        name: Deploy frontend objects
-        command: |
-          # your code here
-          cd frontend
-          npm install
-          npm run build
-          tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-          aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+          name: Deploy frontend objects
+          command: |
+            # your code here
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
@@ -317,19 +317,19 @@ jobs:
       - install-tar-gzip
       - install-nodejs-npm
       - run:
-        name: Deploy backend
-        command: |
-          # your code here
-          cd backend
-          npm i
-          npm run build
-          cd ..
-          # Zip the directory
-          tar -C backend -czvf artifact.tar.gz .
-          cd .circleci/ansible
-          echo "Contents  of the inventory.txt file is -------
-          cat inventory.txt
-          ansible-playbook -i inventory.txt deploy-backend.yml
+          name: Deploy backend
+          command: |
+            # your code here
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
