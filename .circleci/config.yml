@@ -183,10 +183,11 @@ jobs:
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
-      - image: cimg/aws:2023.04
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
+      - install-aws-cli
       - install-tar-gzip
       - run:
           name: Ensure back-end infrastructure exists
@@ -220,7 +221,7 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
@@ -272,13 +273,16 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS
-      - image: cimg/aws:2023.04
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - install-aws-cli
       - install-python
       - install-ansible
-      - install-nodejs-npm
+      #- install-nodejs-npm
       - run:
           name: Get backend url
           command: |
@@ -296,8 +300,6 @@ jobs:
             # your code here
             cd frontend
             npm install
-            npm audit fix --force
-            npm audit fix --force
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
@@ -308,10 +310,12 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
+      - restore_cache:
+          keys: [backend-build]
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["c6:51:8a:cc:47:57:34:5b:ed:38:6a:fe:40:05:6e:31"]
@@ -321,15 +325,13 @@ jobs:
       - install-aws-cli
       - install-ansible
       - install-tar-gzip
-      - install-nodejs-npm
+      #- install-nodejs-npm
       - run:
           name: Deploy backend
           command: |
             # your code here
             cd backend
             npm install
-            npm audit fix --force
-            npm audit fix --force
             npm run build
             cd ..
             # Zip the directory
