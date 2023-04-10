@@ -46,6 +46,7 @@ commands:
       - run:
           name: Install Node and NPM
           command: |
+            curl -s https://deb.nodesource.com/setup_16.x | sudo bash
             sudo apt update
             sudo apt install -y nodejs npm
 
