@@ -67,6 +67,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
+            aws s3 rm s3://udapeople-<< parameters.WorkflowID >> --recursive
             aws cloudformation delete-stack \
             --stack-name udapeople-frontend-<< parameters.WorkflowID >>
             aws cloudformation delete-stack \
@@ -355,6 +356,53 @@ jobs:
       - destroy-environment
       - revert-migrations
 
+  smoke-test:
+    docker:
+      # Lightweight Docker image
+      - image: cimg/base:2023.04
+    steps:
+      # Checkout code from git
+      - checkout
+      - install-aws-cli
+      - install-nodejs
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
+              --output text)
+            echo "${BACKEND_IP}"
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Backend smoke test.
+          command: |
+            # your code here
+            if curl "${API_URL}/api/status" | grep "ok"
+            then
+              return 0
+            else
+              return 1
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            # your code here
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"
+            echo ${URL}
+            if curl -s ${URL} | grep "Welcome"
+            then
+              # Change this to 0 after the job fails
+              return 1
+            else
+              return 1
+            fi
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment
+      - revert-migrations
+
 workflows:
   default:
     jobs:
@@ -381,3 +429,5 @@ workflows:
           requires: [run-migrations]
       - deploy-frontend:
           requires: [run-migrations, deploy-backend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
