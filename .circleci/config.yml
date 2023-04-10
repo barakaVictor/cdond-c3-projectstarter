@@ -159,11 +159,9 @@ jobs:
           name: Scan Frontend
           command: |
             cd frontend
+            npm install -g npm-check-updates
+            ncu -u
             npm install
-            npm audit fix --force
-            npm audit fix --force
-            npm audit fix --force
-            npm audit fix --force
             npm audit --audit-level=critical
 
   scan-backend:
@@ -177,11 +175,9 @@ jobs:
           name: Scan Backend
           command: |
             cd backend
+            npm install -g npm-check-updates
+            ncu -u
             npm install
-            npm audit fix --force
-            npm audit fix --force
-            npm audit fix --force
-            npm audit fix --force
             npm audit --audit-level=critical
 
   deploy-infrastructure:
