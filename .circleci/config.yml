@@ -54,7 +54,7 @@ commands:
             # add nodesource for nodejs 16 to apt sources
             curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
             # install node and npm
-            sudo apt install -y nodejs npm
+            sudo apt install -y nodejs
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
