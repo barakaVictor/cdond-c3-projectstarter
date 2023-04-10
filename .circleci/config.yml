@@ -290,8 +290,6 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
       #- install-aws-cli
       - install-python
       - install-ansible
@@ -327,8 +325,6 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - restore_cache:
-          keys: [backend-build]
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["c6:51:8a:cc:47:57:34:5b:ed:38:6a:fe:40:05:6e:31"]
