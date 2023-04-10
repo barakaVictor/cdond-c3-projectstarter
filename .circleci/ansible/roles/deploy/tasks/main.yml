@@ -14,7 +14,6 @@
       unarchive:
         src: artifact.tar.gz
         dest: ~/udapeople-backend
-
     - name: "Install NPM dependencies and start backend app"
       shell: |
         cd ~/udapeople-backend
