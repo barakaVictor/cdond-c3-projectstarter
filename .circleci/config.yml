@@ -162,6 +162,8 @@ jobs:
             npm install -g npm-check-updates
             ncu -u
             npm install --force
+            npm audit fix --force
+            npm audit fix --force
             npm audit --audit-level=critical
 
   scan-backend:
@@ -178,6 +180,8 @@ jobs:
             npm install -g npm-check-updates
             ncu -u
             npm install --force
+            npm audit fix --force
+            npm audit fix --force
             npm audit --audit-level=critical
 
   deploy-infrastructure:
