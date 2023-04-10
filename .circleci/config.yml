@@ -376,7 +376,11 @@ jobs:
             echo "${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
+
+            echo "Sleeping for 1 minute"
+            sleep 60
+
+            if curl -v "${API_URL}/api/status" | grep "ok"
               then
                 return 0
               else
@@ -409,10 +413,6 @@ jobs:
       - install-aws-cli
       - install-nodejs-npm
       - run:
-          name: Install dependencies
-          command: |
-            # your code here
-      - run:
           name: Update cloudfront distribution
           command: |
             # your code here
@@ -422,8 +422,8 @@ jobs:
 
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
-            --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} \
-            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
 
             echo OldWorkflowID: "${OldWorkflowID}"
