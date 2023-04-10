@@ -1,6 +1,6 @@
 ---
 - name: "Setup backend app directory"
-  become: yes
+  become: true
   tasks:
     - name: copy build artifact to same directory as ansible deploy role
       copy:
