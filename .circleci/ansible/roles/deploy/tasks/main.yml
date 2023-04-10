@@ -1,22 +1,23 @@
 ---
-- name: "Setup backend app directory"
+- name: "Copy build artifact to same directory as ansible deploy role"
   become: true
-  tasks:
-    - name: "Copy build artifact to same directory as ansible deploy role"
-      copy:
-        src: ../../../../../backend/artifact.tar.gz
-        dest: .
-    - name: "Create top level directory for the unarchived files"
-      file:
-        path: ~/udapeople-backend
-        state: directory
-    - name: "Unarchive build artifact"
-      unarchive:
-        src: artifact.tar.gz
-        dest: ~/udapeople-backend
-    - name: "Install NPM dependencies and start backend app"
-      shell: |
-        cd ~/udapeople-backend
-        npm install
-        pm2 stop default
-        pm2 start npm -- start
+  copy:
+    src: ../../../../../backend/artifact.tar.gz
+    dest: .
+- name: "Create top level directory for the unarchived files"
+  become: true
+  file:
+    path: ~/udapeople-backend
+    state: directory
+- name: "Unarchive build artifact"
+  become: true
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/udapeople-backend
+- name: "Install NPM dependencies and start backend app"
+  become: true
+  shell: |
+    cd ~/udapeople-backend
+    npm install
+    pm2 stop default
+    pm2 start npm -- start
