@@ -364,7 +364,7 @@ jobs:
       # Checkout code from git
       - checkout
       - install-aws-cli
-      - install-nodejs
+      - install-nodejs-npm
       - run:
           name: Get backend url
           command: |
