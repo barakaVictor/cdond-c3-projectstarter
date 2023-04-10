@@ -1,18 +1,22 @@
 ---
-- name: "Create backend app top level directory"
-  become: true
-  file:
-    path: ~/udapeople-backend
-    state: directory
 - name: "Unarchive build artifact"
   become: true
   unarchive:
-    src: artifact.tar.gz
-    dest: ~/udapeople-backend
+    src: files/artifact.tar.gz
+    dest: .
 - name: "Install npm dependencies and start backend app"
   become: true
   shell: |
-    cd ~/udapeople-backend
     npm install
-    pm2 stop default
-    pm2 start npm -- start
+    pm2 stop all
+    pm2 start npm --name "udapeople-backend" -- run start
+- name: "Set pm2 start as service"
+  become: yes
+  shell: |
+    env PATH=$PATH:/usr/local/bin pm2 startup -u ubuntu
+- name: check pm2 status
+  become: yes
+  shell: |
+    pm2 describe "udapeople-backend"
+  register: command_output_npm
+- debug: var=command_output_npm.stdout_lines
