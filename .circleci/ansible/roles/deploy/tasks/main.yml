@@ -2,7 +2,7 @@
 - name: "Copy build artifact to same directory as ansible deploy role"
   become: true
   copy:
-    src: ../../../../../backend/artifact.tar.gz
+    src: ../../../../../../artifact.tar.gz
     dest: .
 - name: "Create top level directory for the unarchived files"
   become: true
