@@ -161,9 +161,10 @@ jobs:
             cd frontend
             npm install -g npm-check-updates
             ncu -u
+            npx babel-upgrade --write
             npm install --force
-            npm audit fix --force
-            npm audit fix --force
+            #npm audit fix --force
+            #npm audit fix --force
             npm audit --audit-level=critical
 
   scan-backend:
@@ -179,9 +180,10 @@ jobs:
             cd backend
             npm install -g npm-check-updates
             ncu -u
+            #npx babel-upgrade --write
             npm install --force
-            npm audit fix --force
-            npm audit fix --force
+            #npm audit fix --force
+            #npm audit fix --force
             npm audit --audit-level=critical
 
   deploy-infrastructure:
