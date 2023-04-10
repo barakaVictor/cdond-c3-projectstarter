@@ -88,7 +88,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -105,7 +105,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -122,7 +122,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -136,7 +136,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -150,7 +150,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -159,17 +159,17 @@ jobs:
           name: Scan Frontend
           command: |
             cd frontend
-            npm install -g npm-check-updates
-            ncu -u
-            npx babel-upgrade --write
-            npm install --force
-            #npm audit fix --force
-            #npm audit fix --force
+            #npm install -g npm-check-updates
+            #ncu -u
+            #npx babel-upgrade --write
+            npm install
+            npm audit fix --force
+            npm audit fix --force
             npm audit --audit-level=critical
 
   scan-backend:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -178,22 +178,22 @@ jobs:
           name: Scan Backend
           command: |
             cd backend
-            npm install -g npm-check-updates
-            ncu -u
+            #npm install -g npm-check-updates
+            #ncu -u
             #npx babel-upgrade --write
-            npm install --force
-            #npm audit fix --force
-            #npm audit fix --force
+            npm install
+            npm audit fix --force
+            npm audit fix --force
             npm audit --audit-level=critical
 
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
-      - image: cimg/node:16.20.0
+      - image: cimg/aws:2023.04
     steps:
       # Checkout code from git
       - checkout
-      - install-aws-cli
+      #- install-aws-cli
       - install-tar-gzip
       - run:
           name: Ensure back-end infrastructure exists
@@ -227,7 +227,7 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: cimg/node:16.20.0
+      - image: cimg/base:2023.04
     steps:
       # Checkout code from git
       - checkout
@@ -250,7 +250,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/node:16.20.0
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
@@ -279,16 +279,16 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS
-      - image: cimg/node:16.20.0
+      - image: cimg/aws:2023.04
     steps:
       # Checkout code from git
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - install-aws-cli
+      #- install-aws-cli
       - install-python
       - install-ansible
-      #- install-nodejs-npm
+      - install-nodejs-npm
       - run:
           name: Get backend url
           command: |
@@ -316,7 +316,7 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: cimg/node:16.20.0
+      - image: cimg/base:2023.04
     steps:
       # Checkout code from git
       - checkout
@@ -331,7 +331,7 @@ jobs:
       - install-aws-cli
       - install-ansible
       - install-tar-gzip
-      #- install-nodejs-npm
+      - install-nodejs-npm
       - run:
           name: Deploy backend
           command: |
