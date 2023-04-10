@@ -1,15 +1,5 @@
 ---
-- name: "Create top level directory for the unarchived files"
-  become: true
-  file:
-    path: ../files
-    state: directory
-- name: "Copy build artifact to same directory as ansible deploy role"
-  become: true
-  copy:
-    src: ~/project/artifact.tar.gz
-    dest: ../files
-- name: "Create top level directory for the unarchived files"
+- name: "Create backend app top level directory"
   become: true
   file:
     path: ~/udapeople-backend
@@ -19,7 +9,7 @@
   unarchive:
     src: artifact.tar.gz
     dest: ~/udapeople-backend
-- name: "Install NPM dependencies and start backend app"
+- name: "Install npm dependencies and start backend app"
   become: true
   shell: |
     cd ~/udapeople-backend
