@@ -2,15 +2,15 @@
 - name: "Setup backend app directory"
   become: true
   tasks:
-    - name: copy build artifact to same directory as ansible deploy role
+    - name: "Copy build artifact to same directory as ansible deploy role"
       copy:
         src: ../../../../../backend/artifact.tar.gz
         dest: .
-    - name: create top level directory for the unarchived files
+    - name: "Create top level directory for the unarchived files"
       file:
         path: ~/udapeople-backend
         state: directory
-    - name: Unarchive build artifact
+    - name: "Unarchive build artifact"
       unarchive:
         src: artifact.tar.gz
         dest: ~/udapeople-backend
