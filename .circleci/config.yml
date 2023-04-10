@@ -47,7 +47,7 @@ commands:
           name: Install Node and NPM
           command: |
             sudo apt update
-            sudo apt install -y nodejs
+            sudo apt install -y nodejs npm
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -318,6 +318,7 @@ jobs:
         # attach workspace
       - attach_workspace:
           at: ~/
+      - install-aws-cli
       - install-ansible
       - install-tar-gzip
       - install-nodejs-npm
