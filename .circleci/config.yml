@@ -92,7 +92,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys: [frontend-build]
+          keys: [frontend-build]
       - run:
           name: Build Frontend
           command: |
@@ -100,8 +100,8 @@ jobs:
             npm install
             npm run build
       - save_cache:
-        paths: [frontend/node_modules]
-        key: frontend-build
+          paths: [frontend/node_modules]
+          key: frontend-build
 
   build-backend:
     docker:
