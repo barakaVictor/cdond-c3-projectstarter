@@ -161,7 +161,7 @@ jobs:
             cd frontend
             npm install -g npm-check-updates
             ncu -u
-            npm install
+            npm install --legacy-peer-deps
             npm audit --audit-level=critical
 
   scan-backend:
@@ -177,7 +177,7 @@ jobs:
             cd backend
             npm install -g npm-check-updates
             ncu -u
-            npm install
+            npm install --legacy-peer-deps
             npm audit --audit-level=critical
 
   deploy-infrastructure:
