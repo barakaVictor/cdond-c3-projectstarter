@@ -46,8 +46,14 @@ commands:
       - run:
           name: Install Node and NPM
           command: |
-            curl -s https://deb.nodesource.com/setup_16.x | sudo bash
             sudo apt update
+            sudo apt-get clean
+            sudo apt-get autoremove
+            # install curl required below for update apt sources
+            sudo apt install -y curl
+            # add nodesource for nodejs 16 to apt sources
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            # install node and npm
             sudo apt install -y nodejs npm
 
   destroy-environment:
