@@ -72,18 +72,18 @@ commands:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
-      -run:
-      name: Revert Migrations
-      when: on_fail
-      command: |
-        LAST_MIGRATION_STATE=$(curl --insecure  https://kvdb.io/RMktn9tdJcK4CjcEV3o6uv/migration_<< parameters.Workflow_ID >>)
-        # Logic for reverting the database state
-        if (( $LAST_MIGRATION_STATE == 1 ));
-          then
-          cd ~/project/backend
-          npm install
-          npm run migration:revert
-        fi
+      - run:
+        name: Revert Migrations
+        when: on_fail
+        command: |
+          LAST_MIGRATION_STATE=$(curl --insecure  https://kvdb.io/RMktn9tdJcK4CjcEV3o6uv/migration_<< parameters.Workflow_ID >>)
+          # Logic for reverting the database state
+          if (( $LAST_MIGRATION_STATE == 1 ));
+            then
+            cd ~/project/backend
+            npm install
+            npm run migration:revert
+          fi
 
 jobs:
   build-frontend:
