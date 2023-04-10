@@ -183,7 +183,7 @@ jobs:
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
-      - image: cimg/base:stable
+      - image: cimg/aws:2023.04
     steps:
       # Checkout code from git
       - checkout
@@ -220,7 +220,7 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: cimg/base:stable
+      - image: cimg/aws:2023.04
     steps:
       # Checkout code from git
       - checkout
@@ -269,7 +269,7 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS
-      - image: cimg/base:stable
+      - image: cimg/aws:2023.04
     steps:
       # Checkout code from git
       - checkout
